@@ -1,0 +1,44 @@
+{
+  "requests": [
+    {
+      "input": "input/",
+      "output": "output/test1/",
+      "stylesheets": {
+        "style": "input/style/dark-theme.yml",
+        "uml": "input/style/plantumlconfig.cfg"
+      },
+      "attributes": [
+        {
+          "name": "source-highlighter",
+          "value": "rouge"
+        },
+        {
+          "name": "rouge-style",
+          "value": "base16.solarized.dark"
+        }
+      ],
+      "format": "pdf",
+      "safemode": "unsafe",
+      "targets": [
+        "test.adoc",
+        "Docs.adoc"
+      ]
+    },
+    {
+      "input": "input/",
+      "output": "output/test2/",
+      "stylesheets": {
+        "style": "input/style/dark-theme.yml",
+        "uml": "input/style/plantumlconfig.cfg"
+      },
+      "format": "pdf",
+      "safemode": "unsafe",
+      "attributes": [
+        {
+          "name": "source-highlighter",
+          "value": "coderay"
+        }
+      ]
+    }
+  ]
+}

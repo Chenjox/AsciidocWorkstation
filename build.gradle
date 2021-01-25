@@ -1,0 +1,35 @@
+plugins {
+    id 'java'
+}
+
+group 'org.example'
+version '1.0-SNAPSHOT'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    testImplementation(platform('org.junit:junit-bom:5.7.0'))
+    testImplementation('org.junit.jupiter:junit-jupiter')
+    implementation('org.asciidoctor:asciidoctorj:2.4.2')
+    implementation('org.asciidoctor:asciidoctorj-pdf:1.5.3')
+    implementation('org.asciidoctor:asciidoctorj-diagram:2.1.0')
+    implementation('org.json:json:20201115')
+}
+test {
+    useJUnitPlatform()
+    testLogging {
+        events "passed", "skipped", "failed"
+    }
+}
+task fatjarring(type: Jar) {
+    manifest{
+        attributes(
+                'Main-Class':'Workstation.main'
+        )
+    }
+    from{
+        configurations.runtimeClasspath.collect{ it.isDirectory() ? it : zipTree(it)}
+    } with jar
+}

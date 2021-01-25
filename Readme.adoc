@@ -1,0 +1,101 @@
+= Util.AsciidocWorkstation
+
+This is my library to convert `.adoc` files to a formatted pdf, or a html website.
+Internally it creates 'Requests' which then convert the given files (or directory for that matter), with the given Attributes.
+
+At program execution, it will look for a `input.json`.
+
+.input json
+[source,json]
+----
+{
+  "requests": [ #<1>
+    {
+      "input": "input/", #<2>
+      "output": "output/test1/", #<3>
+      "stylesheets": {
+        "style": "input/style/dark-theme.yml", #<4>
+        "uml": "input/style/plantumlconfig.cfg" #<5>
+      },
+      "attributes": [ #<6>
+        {
+          "name": "source-highlighter",
+          "value": "rouge"
+        },
+        {
+          "name": "rouge-style",
+          "value": "base16.solarized.dark"
+        }
+      ],
+      "format": "pdf", #<7>
+      "safemode": "save", #<8>
+      "targets": [ #<9>
+        "test.adoc",
+        "Docs.adoc"
+      ]
+    }
+  ]
+}
+----
+<1> This is the array of `requests` multiple requests can be added here.
+<2> the relative input dir with trailing `/`
+<3> the relative output dir with trailing `/`
+<4> the css/yml file for the format. Can be empty.
+<5> the configuration style given to the `plantuml` processor.
+<6> the global overridden attributes of the adoc files.
+<7> the target format
+<8> the safemode, can be one of four `unsafe`, `server`, `save`, `secure`
+<9> the target files in the `input` dir. If omitted, it will convert all .adoc files inside the directory.
+
+After each run, a `WorkLog.txt` will be created.
+
+.WorkLog
+[source]
+----
+[18:07:02]: Starting
+[18:07:02]: Reading input.json
+[18:07:02]: |-- Reading Request 0 <1>
+[18:07:02]: |   |-- Format: pdf
+[18:07:02]: |   |-- Safemode: UNSAFE
+[18:07:02]: |   |-- Output: output/test1/
+[18:07:02]: |   |-- Creating Stylesheets
+[18:07:02]: |   |   |-- Reading Stylesheet: input/style/dark-theme.yml
+[18:07:02]: |   |   |   |-- Exists: true
+[18:07:02]: |   |   |   |-- Is a File: true
+[18:07:02]: |   |   |-- Reading UML Stylesheet: input/style/plantumlconfig.cfg
+[18:07:02]: |   |   |   |-- Exists: true
+[18:07:02]: |   |   |   |-- Is a File: true
+[18:07:02]: |   |   |-- Reading JSON Stylesheet: json
+[18:07:02]: |   |   |   |-- Exists: false
+[18:07:02]: |   |   |   |-- Is a File: false
+[18:07:02]: |   |-- Attributes
+[18:07:02]: |   |   |-- 0: Reading Attribute: source-highlighter : rouge
+[18:07:02]: |   |   |-- 1: Reading Attribute: rouge-style : base16.solarized.dark
+[18:07:02]: |   |-- Reading Targets from input/
+[18:07:02]: |   |   |-- File test.adoc
+[18:07:02]: |   |   |-- File Docs.adoc
+[18:07:02]: Starting Conversion
+[18:07:02]: |-- Starting Conversion 0
+[18:07:04]: |   |-- Adding Library: asciidoctor-diagram <2>
+[18:07:05]: |   |-- Fetching Attributes...
+[18:07:05]: |   |-- Fetching Styles...
+[18:07:05]: |   |   |-- Adding D:\input\style\dark-theme.yml as Stylesheet
+[18:07:05]: |   |   |-- Adding D:\input\style\plantumlconfig.cfg as Stylesheet
+[18:07:05]: |   |-- Converting Files...
+[18:07:05]: |   |-- Loglevel Info <3>
+[18:07:09]: |   |   |-- ERROR: test.adoc Line: 32 Failed to generate image:
+[18:07:09]: |   |   |-- ERROR: test.adoc Line: 55 Failed to generate image:
+[18:07:09]: |   |   |-- ERROR: test.adoc Line: 76 Failed to generate image:
+[18:07:09]: |   |   |-- ERROR: test.adoc Line: 83 Failed to generate image:
+[18:07:09]: |   |   |-- ERROR: test.adoc Line: 7 Failed to generate image:
+[18:07:17]: Closing Down!
+----
+<1> The reading part. Every field is checked and read into memory.
+<2> External Libaries are added here, `asciidoctorj-diagram` is added by default.
+<3> The internal log information. Useful for debugging.
+
+'''
+.Todo
+- [ ] Making it more robust.
+- [ ] Using the same asciidoctor instance? Maybe?
+- [ ] Documentation
