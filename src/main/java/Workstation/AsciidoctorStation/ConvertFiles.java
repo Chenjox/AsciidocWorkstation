@@ -1,5 +1,7 @@
 package Workstation.AsciidoctorStation;
 
+import AsciidoctorJExtension.JLatexMath.JLatexBlockProcessor;
+import AsciidoctorJExtension.JPlantUml.JPlantUmlBlockProcessor;
 import Workstation.Util.WorkLogger;
 import org.asciidoctor.*;
 import org.json.JSONArray;
@@ -76,8 +78,10 @@ public class ConvertFiles implements ConvertRequest{
         WorkLogger.AddIndent();
         Asciidoctor asciidoctor = Asciidoctor.Factory.create();
 
-        WorkLogger.log( "Adding Library: asciidoctor-diagram" );
-        asciidoctor.requireLibrary( "asciidoctor-diagram" );
+        WorkLogger.log( "Adding Extension: asciidoctor-jLaTeX" );
+        asciidoctor.javaExtensionRegistry().block( JLatexBlockProcessor.class );
+        WorkLogger.log( "Adding Extension: asciidoctor-juml" );
+        asciidoctor.javaExtensionRegistry().block( JPlantUmlBlockProcessor.class );
 
         WorkLogger.log( "Fetching Attributes..." );
         AttributesBuilder ab = AttributesBuilder.attributes();
@@ -87,19 +91,16 @@ public class ConvertFiles implements ConvertRequest{
         WorkLogger.AddIndent();
         if(Stylesheet.getStylesheetExistance()){
             WorkLogger.log( "Adding "+Stylesheet.getAbsoluteStylesheet()+" as Stylesheet" );
-            ab.attribute( "pdf-style", Stylesheet.getStylesheetName() );
+            ab.attribute( "pdf-theme", Stylesheet.getStylesheetName() );
             ab.attribute( "pdf-themesdir", Stylesheet.getAbsoluteToStylesheet() );
             ab.styleSheetName( Stylesheet.getStylesheetName() );
             ab.stylesDir( Stylesheet.getAbsoluteToStylesheet() );
         }
         if(Stylesheet.getUMLStylesheetExistance()){
             WorkLogger.log( "Adding "+Stylesheet.getAbsoluteUMLStylesheet()+" as Stylesheet" );
-            ab.attribute( "plantuml-uml-config", Stylesheet.getAbsoluteUMLStylesheet() );
+            ab.attribute( "juml-config", Stylesheet.getAbsoluteUMLStylesheet() );
         }
-        if(Stylesheet.getJSONStylesheetExistance()){
-            WorkLogger.log( "Adding "+Stylesheet.getAbsoluteJSONStylesheet()+" as Stylesheet" );
-            ab.attribute( "plantuml-json-config", Stylesheet.getAbsoluteJSONStylesheet() );
-        }
+
         WorkLogger.DecIndent();
         WorkLogger.log( "Converting Files..." );
         WorkLogger.log( "Loglevel Info" );
@@ -107,7 +108,7 @@ public class ConvertFiles implements ConvertRequest{
 
         asciidoctor.registerLogHandler( logRecord -> WorkLogger.log(
                 logRecord.getSeverity().toString()+": "
-                        +logRecord.getCursor().getFile().substring( logRecord.getCursor().getFile().lastIndexOf( '/' )+1 )+" Line: "
+                        +logRecord.getCursor().getFile().substring( logRecord.getCursor().getFile().lastIndexOf( '/' ) )+" Line: "
                         +logRecord.getCursor().getLineNumber()+" "
                         +logRecord.getMessage()
         ) );

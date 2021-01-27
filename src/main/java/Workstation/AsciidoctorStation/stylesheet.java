@@ -9,17 +9,15 @@ public class stylesheet {
 
     private final File NormalStylesheet;
     private final File UMLStylesheet;
-    private final File JSONStylesheet;
 
     public static stylesheet getStylesheetFromJSON(JSONObject o){
         String s1,s2,s3;
         s1 = o.has( "style" ) ? o.getString( "style" ): "style";
         s2 = o.has("uml") ? o.getString( "uml" ):"uml";
-        s3 = o.has( "json" )? o.getString( "json" ):"json";
-        return new stylesheet( s1, s2, s3 );
+        return new stylesheet( s1, s2 );
     }
 
-    public stylesheet(String NormalStylesheet, String UMLStylesheet, String JSONStylesheet){
+    public stylesheet(String NormalStylesheet, String UMLStylesheet){
         WorkLogger.log( "Creating Stylesheets" );
         WorkLogger.AddIndent();
 
@@ -37,14 +35,6 @@ public class stylesheet {
         WorkLogger.log( "Exists: "+f.exists() );
         WorkLogger.log( "Is a File: "+f.isFile() );
         this.UMLStylesheet = f;
-        WorkLogger.DecIndent();
-
-        WorkLogger.log( "Reading JSON Stylesheet: "+JSONStylesheet );
-        WorkLogger.AddIndent();
-        f = new File( JSONStylesheet );
-        WorkLogger.log( "Exists: "+f.exists() );
-        WorkLogger.log( "Is a File: "+f.isFile() );
-        this.JSONStylesheet = f;
         WorkLogger.DecIndent();
 
         WorkLogger.DecIndent();
@@ -66,11 +56,5 @@ public class stylesheet {
     }
     public boolean getUMLStylesheetExistance(){
         return UMLStylesheet.isFile()&&UMLStylesheet.canRead();
-    }
-    public String getAbsoluteJSONStylesheet(){
-        return JSONStylesheet.getAbsolutePath();
-    }
-    public boolean getJSONStylesheetExistance(){
-        return JSONStylesheet.isFile()&&JSONStylesheet.canRead();
     }
 }

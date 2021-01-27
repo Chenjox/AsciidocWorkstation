@@ -1,5 +1,7 @@
 package Workstation.AsciidoctorStation;
 
+import AsciidoctorJExtension.JLatexMath.JLatexBlockProcessor;
+import AsciidoctorJExtension.JPlantUml.JPlantUmlBlockProcessor;
 import Workstation.Util.WorkLogger;
 import org.asciidoctor.*;
 import org.asciidoctor.jruby.AsciiDocDirectoryWalker;
@@ -42,7 +44,6 @@ public class ConvertDirectory implements ConvertRequest{
             attri = ConvertRequest.GetAttributesFromJson( o.getJSONArray( "attributes" ) );
             WorkLogger.DecIndent();
         }
-        //Reading Targets
         WorkLogger.DecIndent();
 
         return new ConvertDirectory( TF, inputdir, outputdir, style, attri, s, index );
@@ -63,8 +64,10 @@ public class ConvertDirectory implements ConvertRequest{
         WorkLogger.AddIndent();
         Asciidoctor asciidoctor = Asciidoctor.Factory.create();
 
-        WorkLogger.log( "Adding Library: asciidoctor-diagram" );
-        asciidoctor.requireLibrary( "asciidoctor-diagram" );
+        WorkLogger.log( "Adding Extension: asciidoctor-jLaTeX" );
+        asciidoctor.javaExtensionRegistry().block( JLatexBlockProcessor.class );
+        WorkLogger.log( "Adding Extension: asciidoctor-juml" );
+        asciidoctor.javaExtensionRegistry().block( JPlantUmlBlockProcessor.class );
 
         WorkLogger.log( "Fetching Attributes..." );
         AttributesBuilder ab = AttributesBuilder.attributes();
@@ -81,19 +84,16 @@ public class ConvertDirectory implements ConvertRequest{
         };
         if(Stylesheet.getUMLStylesheetExistance()){
             WorkLogger.log( "Adding "+Stylesheet.getAbsoluteUMLStylesheet()+" as Stylesheet" );
-            ab.attribute( "plantuml-uml-config", Stylesheet.getAbsoluteUMLStylesheet() );
+            ab.attribute( "juml-config", Stylesheet.getAbsoluteUMLStylesheet() );
         }
-        if(Stylesheet.getJSONStylesheetExistance()){
-            WorkLogger.log( "Adding "+Stylesheet.getAbsoluteJSONStylesheet()+" as Stylesheet" );
-            ab.attribute( "plantuml-json-config", Stylesheet.getAbsoluteJSONStylesheet() );
-        }
+
         WorkLogger.DecIndent();
         WorkLogger.log( "Converting Directory..." );
         WorkLogger.log( "Loglevel Info" );
         WorkLogger.AddIndent();
         asciidoctor.registerLogHandler( logRecord -> WorkLogger.log(
                 logRecord.getSeverity().toString()+": "
-                        +logRecord.getCursor().getFile().substring( logRecord.getCursor().getFile().lastIndexOf( '/' )+1 )+" Line: "
+                        +logRecord.getCursor().getFile().substring( logRecord.getCursor().getFile().lastIndexOf( '/' ) )+" Line: "
                         +logRecord.getCursor().getLineNumber()+" "
                         +logRecord.getMessage()
         ) );

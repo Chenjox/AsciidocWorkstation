@@ -15,6 +15,18 @@
         {
           "name": "rouge-style",
           "value": "base16.solarized.dark"
+        },
+        {
+          "name": "jlatex-backcolor",
+          "value": "282c34"
+        },
+        {
+          "name": "jlatex-fontcolor",
+          "value": "E9E9E2"
+        },
+        {
+          "name": "imagesdir",
+          "value": "imagesdark"
         }
       ],
       "format": "pdf",
@@ -29,7 +41,7 @@
       "output": "output/test2/",
       "stylesheets": {
         "style": "input/style/dark-theme.yml",
-        "uml": "input/style/plantumlconfig.cfg"
+        "uml": ""
       },
       "format": "pdf",
       "safemode": "unsafe",
@@ -37,6 +49,10 @@
         {
           "name": "source-highlighter",
           "value": "coderay"
+        },
+        {
+          "name": "imagesdir",
+          "value": "imageslight"
         }
       ]
     }
